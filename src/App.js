@@ -1,21 +1,27 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Card } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Row, Spinner } from 'react-bootstrap';
 import './App.css';
+import News from './components/News/News';
 
 function App() {
+  const [news, setNews] = useState([])
+  console.log(news)
+  useEffect(() => {
+    fetch('https://newsapi.org/v2/everything?q=tesla&from=2021-08-29&sortBy=publishedAt&apiKey=e970d0ccb0ed4345a65e3dff5ab106ef')
+      .then(res => res.json())
+      .then(data => setNews(data.articles))
+  }, [])
   return (
     <div className="App">
-      <Card style={{ width: '18rem' }}>
-        <Card.Img variant="top" src="holder.js/100px180" />
-        <Card.Body>
-          <Card.Title>Card Title</Card.Title>
-          <Card.Text>
-            Some quick example text to build on the card title and make up the bulk of
-            the card's content.
-          </Card.Text>
-          <Button variant="primary">Go somewhere</Button>
-        </Card.Body>
-      </Card>
+
+      {news.length === 0 ? <Spinner animation="border" /> :
+        <Row xs={1} md={3} className="g-4">
+          {
+            news.map(nw => <News news={nw}></News>)
+          }
+        </Row>
+      }
     </div>
   );
 }
